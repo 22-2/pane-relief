@@ -34,18 +34,20 @@ export class Maximizer extends Service {
         const self = this
         this.register(around(app.workspace, {
             setActiveLeaf(old) { return function setActiveLeaf(leaf, ...args: any[]) {
-                // We have to do this here so that MarkdownView can be focused in the new pane
-                const parent = self.parentForLeaf(leaf), oldParent = self.parentForLeaf(app.workspace.activeLeaf);
-                if (
-                    parent && oldParent && parent !== oldParent &&
-                    oldParent.matchParent(".hover-popover.is-active.snap-to-viewport") &&
-                    parent.ownerDocument === oldParent.ownerDocument &&
-                    !parent.matchParent(".hover-popover")
-                ) {
-                    // Switching from maximized popover to non-popover; de-maximize it first
-                    app.commands.executeCommandById("obsidian-hover-editor:restore-active-popover");
+                if ((leaf?.view as any)?.editor) {
+                    // We have to do this here so that MarkdownView can be focused in the new pane
+                    const parent = self.parentForLeaf(leaf), oldParent = self.parentForLeaf(app.workspace.activeLeaf);
+                    if (
+                        parent && oldParent && parent !== oldParent &&
+                        oldParent.matchParent(".hover-popover.is-active.snap-to-viewport") &&
+                        parent.ownerDocument === oldParent.ownerDocument &&
+                        !parent.matchParent(".hover-popover")
+                    ) {
+                        // Switching from maximized popover to non-popover; de-maximize it first
+                        app.commands.executeCommandById("obsidian-hover-editor:restore-active-popover");
+                    }
+                    if (isMain(leaf) && parent) self.refresh(parent, parent.hasClass("should-maximize") ? leaf.containerEl : null);
                 }
-                if (isMain(leaf) && parent) self.refresh(parent, parent.hasClass("should-maximize") ? leaf.containerEl : null);
                 return old.call(this, leaf, ...args);
             }}
         }));

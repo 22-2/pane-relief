@@ -36,18 +36,18 @@ export class FocusLock extends Service {
         // wrap setActiveLeaf and canNavigate to prevent select/activate
         this.register(around(app.workspace, {
             setActiveLeaf(old) { return function(this: Workspace, leaf, ...etc: any[]) {
-                if (!self.isLocked || isMain(leaf)) return old.call(this, leaf, ...etc);
+                if (!leaf || !self.isLocked || isMain(leaf)) return old.call(this, leaf, ...etc);
                 app.workspace.revealLeaf(leaf);  // allow visibility
                 // Handle the case where there was no prior active leaf
                 if (!this.activeLeaf || !isLeafAttached(this.activeLeaf))
                     return old.call(this, this.getLeaf(), ...etc);
                 // Obsidian 1.7.x handles search focusing differently; this restores the old behavior
-                if (leaf.view?.getViewType() === "search" && etc[0] === true || etc[0]?.focus) leaf.setEphemeralState({focus: true});
+                if (leaf.view?.getViewType() === "search" && (etc[0] === true || etc[0]?.focus)) leaf.setEphemeralState({focus: true});
             }},
             revealLeaf(old) {
                 return function(leaf: WorkspaceLeaf) {
-                    const container = leaf.getContainer();
-                    if (!self.isLocked || isMain(leaf) || !container) return old.call(this, leaf);
+                    const container = leaf?.getContainer();
+                    if (!leaf || !self.isLocked || isMain(leaf) || !container) return old.call(this, leaf);
                     const remove = around(container, {focus() { return function() {}; }});
                     try { return old.call(this, leaf); } finally { remove(); }
                 }

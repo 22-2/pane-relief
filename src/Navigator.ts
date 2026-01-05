@@ -337,7 +337,7 @@ export class Navigator extends Component {
         menu.register(around(app.workspace, {setActiveLeaf(old) {
             // Don't allow a hover editor to auto-focus, so you can mod-click without targeting it
             return function(leaf, ...args: any[]) {
-                if (leaf.containerEl.matchParent(".hover-editor")) return;
+                if (leaf?.containerEl?.matchParent(".hover-editor")) return;
                 return old.call(this, leaf, ...args);
             }
         }}));
