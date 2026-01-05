@@ -9,8 +9,8 @@
   "packageManager": "pnpm@7.33.6",
   "devDependencies": {
     "@ophidian/build": "^1.2.1",
-    "@ophidian/core": "0.0.21",
-    "monkey-around": "^2.3.0",
-    "obsidian": "1.2.8"
+    "@ophidian/core": "0.0.24",
+    "monkey-around": "^3.0.0",
+    "obsidian": "1.11.0"
   }
 }
