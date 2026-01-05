@@ -351,21 +351,17 @@ export class Navigator extends Component {
         return;
 
         function createItem(i: MenuItem, prefix="") {
-            i.setIcon(info.icon).setTitle(prefix + info.title).onClick(e => {
-                // Check for ctrl/cmd/middle button and split leaf + copy history
-                if (Keymap.isModEvent(e)) {
-                    if (history.leaf) {
-                        // Use the new duplication API because native history doesn't store current state
-                        app.workspace.duplicateLeaf(history.leaf, Keymap.isModEvent(e)).then(leaf => {
-                            History.forLeaf(leaf).go((idx+1) * dir, true);
-                        });
-                        return;
-                    } else {
-                        history = history.cloneTo(app.workspace.getLeaf(Keymap.isModEvent(e)));
-                    }
+            const go = (e: MouseEvent | KeyboardEvent) => {
+                const mod = Keymap.isModEvent(e) || (e instanceof MouseEvent && e.button === 1);
+                if (mod && history.leaf) {
+                    return app.workspace.duplicateLeaf(history.leaf, mod).then(leaf => {
+                        History.forLeaf(leaf).go((idx+1) * dir, true);
+                    });
                 }
-                history.go((idx+1) * dir, true);
-            });
+                (mod ? history.cloneTo(app.workspace.getLeaf(mod)) : history).go((idx+1) * dir, true);
+            };
+            i.setIcon(info.icon).setTitle(prefix + info.title).onClick(go);
+            i.dom.addEventListener("auxclick", e => e.button === 1 && go(e));
         }
 
         function setupFileEvents(dom: HTMLElement) {
