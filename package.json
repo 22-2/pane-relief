@@ -1,5 +1,6 @@
 {
   "name": "pane-relief",
+  "version": "0.6.0",
   "type": "module",
   "scripts": {
     "dev": "node ophidian.config.mjs dev",
