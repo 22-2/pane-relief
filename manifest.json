@@ -1,10 +1,10 @@
 {
 	"id": "pane-relief",
-	"name": "Pane Relief (PJ Eby, 22-2)",
+	"name": "Pane Relief",
 	"version": "0.6.0",
 	"minAppVersion": "1.5.8",
 	"description": "Per-tab history, hotkeys for pane/tab movement, navigation, sliding workspace, and more",
-	"author": "PJ Eby",
+	"author": "PJ Eby, 22-2",
 	"authorUrl": "https://github.com/pjeby",
 	"isDesktopOnly": true
 }
